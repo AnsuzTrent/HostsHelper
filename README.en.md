@@ -1,25 +1,16 @@
 # SearchHosts
 
 #### Description
-
-{**When you're done, you can delete the content in this README and update the file with details for others getting
-started with your repository**}
+Make it easier to change hosts files to access sites like "Github.com" and "www.python.org"
 
 #### Software Architecture
-
-Software architecture description
+Divided into two parts, "Java" and "kotlin", the function is exactly the same, is the product of learning kotlin
 
 #### Installation
-
-1. xxxx
-2. xxxx
-3. xxxx
+?
 
 #### Instructions
-
-1. xxxx
-2. xxxx
-3. xxxx
+?
 
 #### Contribution
 
@@ -27,6 +18,7 @@ Software architecture description
 2. Create Feat_xxx branch
 3. Commit your code
 4. Create Pull Request
+
 
 #### Gitee Feature
 
