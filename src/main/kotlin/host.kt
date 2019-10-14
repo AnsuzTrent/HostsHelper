@@ -24,9 +24,10 @@ fun main() {
 class GUI : JFrame() {
 	private val hosts = JTextField()
 	private val search = JButton("搜索")
-	private val textA = JTextArea("请选择功能")
+	private val textA = JTextArea("请选择功能\n")
 	private val backupHosts = JButton("备份")
 	private val updateHosts = JButton("更新")
+	private val openFolder = JButton("打开hosts 所在文件夹")
 	private var scrollBar: JScrollBar
 
 	private val etcPath = "C:\\Windows\\System32\\drivers\\etc"
@@ -60,7 +61,6 @@ class GUI : JFrame() {
 		backup.add(backupHosts)
 		updateHosts.addActionListener { Update().execute() }
 		backup.add(updateHosts)
-		val openFolder = JButton("打开hosts 所在文件夹")
 		openFolder.addActionListener { openEtc() }
 		backup.add(openFolder)
 		add(backup, BorderLayout.SOUTH)
@@ -73,10 +73,10 @@ class GUI : JFrame() {
 		defaultCloseOperation = EXIT_ON_CLOSE    //关闭窗口按钮
 		isVisible = true    //是否可见
 
-
 		if (!System.getProperty("os.name").contains("indows")) {
 			textA.text = "目前仅支持Windows 2000/XP 及以上版本"
 			setButtonStatus(false)
+			openFolder.isEnabled = false
 		}
 		//听说其在Win98,win me 中位于/Windows 下？
 
@@ -101,7 +101,6 @@ class GUI : JFrame() {
 	}
 
 	private fun backup(): Boolean {
-		textA.text = ""
 		try {
 			//备份hosts
 			val backup = File("$editFile.bak")
@@ -198,6 +197,39 @@ class GUI : JFrame() {
 		return Jsoup.parse(page.asXml(), url)
 	}
 
+	private fun filterRules(str: String): Int {
+		if (str.startsWith("#") || str == "")
+			return 1
+		else if (str.startsWith("10.") or
+			str.startsWith("0.0.0.0") or
+			str.startsWith("127.") or
+//			str.startsWith("191.255.255.255") or
+			str.startsWith("172.16.") or
+			str.startsWith("172.17.") or
+			str.startsWith("172.18.") or
+			str.startsWith("172.19.") or
+			str.startsWith("172.20.") or
+			str.startsWith("172.21.") or
+			str.startsWith("172.22.") or
+			str.startsWith("172.23.") or
+			str.startsWith("172.24.") or
+			str.startsWith("172.25.") or
+			str.startsWith("172.26.") or
+			str.startsWith("172.27.") or
+			str.startsWith("172.28.") or
+			str.startsWith("172.29.") or
+			str.startsWith("172.30.") or
+			str.startsWith("172.31.") or
+			str.startsWith("169.254.") or
+			str.startsWith("192.168.")
+		) {
+			appendString("内网IP:\t$str\n")
+			local.addElement("$str\n")
+			return 2
+		} else
+			return 0
+	}
+
 	private fun readHosts(): Vector<String>? {
 		val recode = Vector<String>()
 
@@ -206,17 +238,12 @@ class GUI : JFrame() {
 		//逐行读取文件记录
 		while (s != null) {
 			//过滤# 开头的注释以及空行
-			if (s.startsWith("#") || s == "") {
-				s = fileReader.readLine()
-				continue
-			}
-			if (s.startsWith("127.0.0.1")) {
-				local.addElement("$s\n")
+			if (filterRules(s) != 0) {
 				s = fileReader.readLine()
 				continue
 			}
 			//以空格作为分割点
-			val fromFile = s.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+			val fromFile = s.replace("\t", " ").split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 			//过滤重复
 			if (recode.indexOf(fromFile[1]) == -1)
 				recode.addElement(fromFile[1])

@@ -2,6 +2,7 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebClientOptions;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,6 +11,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
@@ -21,17 +23,18 @@ import java.util.logging.Level;
 
 public class host {
 	public static void main(String[] args) {
-		EventQueue.invokeLater(SearchHosts::new);
+		EventQueue.invokeLater(SearchUtil::new);
 	}
 }
 
-class SearchHosts extends JFrame {
+class SearchUtil extends JFrame {
 	private static JTextField hosts = new JTextField();
 	private static JButton search = new JButton("搜索");
-	private static JTextArea textA = new JTextArea("请选择功能");
+	private static JTextArea textA = new JTextArea("请选择功能\n");
 	private static JButton backupHosts = new JButton("备份");
 	private static JButton updateHosts = new JButton("更新");
 	private static JButton openFolder = new JButton("打开hosts 所在文件夹");
+	private static JButton flushDNS = new JButton("刷新DNS 配置");
 	private static JScrollBar scrollBar;
 
 	private static String EtcPath = "C:\\Windows\\System32\\drivers\\etc";
@@ -39,7 +42,7 @@ class SearchHosts extends JFrame {
 	private static File editFile = new File(FileSystemView.getFileSystemView().getHomeDirectory().getPath() + "\\hosts");
 	private static Vector<String> local = new Vector<>();
 
-	SearchHosts() {
+	SearchUtil() {
 		//顶栏
 		JPanel append = new JPanel();
 		append.setLayout(new GridLayout(1, 2));
@@ -60,13 +63,15 @@ class SearchHosts extends JFrame {
 
 		//底栏
 		JPanel backup = new JPanel();
-		backup.setLayout(new GridLayout(1, 3));
+		backup.setLayout(new GridLayout(1, 4));
 		backupHosts.addActionListener(e -> Backup());
 		backup.add(backupHosts);
 		updateHosts.addActionListener(e -> new update().execute());
 		backup.add(updateHosts);
 		openFolder.addActionListener(e -> OpenEtc());
 		backup.add(openFolder);
+		flushDNS.addActionListener(e -> toFlushDNS());
+		backup.add(flushDNS);
 		add(backup, BorderLayout.SOUTH);
 
 		setTitle("Search Hosts in Website");
@@ -80,6 +85,8 @@ class SearchHosts extends JFrame {
 		if (!System.getProperty("os.name").contains("indows")) {
 			textA.setText("\n目前仅支持Windows 2000/XP 及以上版本");
 			setButtonStatus(false);
+			openFolder.setEnabled(false);
+			flushDNS.setEnabled(false);
 		}
 		//听说其在Win98,win me 中位于/Windows 下？
 	}
@@ -101,7 +108,6 @@ class SearchHosts extends JFrame {
 	}
 
 	private static Boolean Backup() {
-		textA.setText("");
 		try {
 			File backup = new File(editFile + ".bak");
 			if (backup.exists())
@@ -119,6 +125,21 @@ class SearchHosts extends JFrame {
 	private static void OpenEtc() {
 		try {
 			Desktop.getDesktop().open(new File(EtcPath));
+		} catch (IOException e) {
+			appendString("\nError in \n" + e.getMessage() + "\n");
+		}
+	}
+
+	private static void toFlushDNS() {
+		try {
+			Process process = Runtime.getRuntime().exec("ipconfig /flushDNS");
+			BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream(), Charset.forName("GBK")));
+			String line;
+			while ((line = br.readLine()) != null)
+				if (!StringUtils.isEmpty(line))
+					appendString("\n" + line + "\n");
+
+			br.close();
 		} catch (IOException e) {
 			appendString("\nError in \n" + e.getMessage() + "\n");
 		}
@@ -205,23 +226,53 @@ class SearchHosts extends JFrame {
 		return Jsoup.parse(page.asXml(), url);
 	}
 
+	private static int FilterRules(String str) {
+		if (str.startsWith("#") || str.equals(""))
+			return 1;
+		else if (str.startsWith("10.") |
+				str.startsWith("0.0.0.0") |
+				str.startsWith("127.") |
+//				str.startsWith("191.255.255.255") |
+				str.startsWith("172.16.") |
+				str.startsWith("172.17.") |
+				str.startsWith("172.18.") |
+				str.startsWith("172.19.") |
+				str.startsWith("172.20.") |
+				str.startsWith("172.21.") |
+				str.startsWith("172.22.") |
+				str.startsWith("172.23.") |
+				str.startsWith("172.24.") |
+				str.startsWith("172.25.") |
+				str.startsWith("172.26.") |
+				str.startsWith("172.27.") |
+				str.startsWith("172.28.") |
+				str.startsWith("172.29.") |
+				str.startsWith("172.30.") |
+				str.startsWith("172.31.") |
+				str.startsWith("169.254.") |
+				str.startsWith("192.168.")
+
+		) {
+			appendString("内网IP:\t" + str + "\n");
+			local.addElement(str + "\n");
+			return 2;
+		} else return 0;
+	}
+
 	private static Vector<String> ReadHosts() {
 		Vector<String> recode = new Vector<>();
 		try {
+			local.clear();
 			FileReader fileReader = new FileReader(hostsPath);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			String s;
 			//逐行读取文件记录
 			while ((s = bufferedReader.readLine()) != null) {
 				//过滤# 开头的注释以及空行
-				if (s.startsWith("#") || s.equals(""))
+				if (FilterRules(s) != 0)
 					continue;
-				if (s.startsWith("127.0.0.1")) {
-					local.addElement(s + "\n");
-					continue;
-				}
 				//以空格作为分割点
-				String[] fromFile = s.split(" ");
+				String[] fromFile = s.replace("\t", " ").split(" ");
 				//过滤重复
 				if (recode.indexOf(fromFile[1]) == -1)
 					recode.addElement(fromFile[1]);
