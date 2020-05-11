@@ -1,7 +1,3 @@
-/*
- * Trent Inc.
- * Copyright (c) 2018- 2020.
- */
 package org.apache.fraud.search.common;
 
 import org.apache.fraud.search.features.Common;
@@ -13,11 +9,8 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-/**
- * @author trent
- */
 public class UserInterface extends JFrame {
-
+	public static final JCheckBox enableTwice = new JCheckBox("开启二次搜索", false);
 	private static final JTextField hostsTextField = new JTextField();
 	private static final JButton searchButton = new JButton("搜索");
 	private static final JTextArea textArea = new JTextArea("请选择功能\n");
@@ -26,7 +19,6 @@ public class UserInterface extends JFrame {
 	private static final JButton openFolderButton = new JButton("打开hosts 所在文件夹");
 	private static final JButton flushButton = new JButton("刷新DNS 配置");
 	private static JScrollBar scrollBar = null;
-	public static JCheckBox enableTwice = new JCheckBox("开启二次搜索", false);
 
 	public UserInterface() {
 		setTop();
@@ -68,7 +60,7 @@ public class UserInterface extends JFrame {
 		enableTwice.setEnabled(flag);
 	}
 
-	public static synchronized void appendString(String str) {
+	public static synchronized void printToUI(String str) {
 		textArea.append(str);
 		try {
 			Thread.sleep(10);
@@ -93,12 +85,23 @@ public class UserInterface extends JFrame {
 		scrollBar.setValue(scrollBar.getMaximum());
 	}
 
+	private static void printException(Exception e) {
+		printToUI("\nError in [" + e.getMessage() + "]\n");
+	}
+
 	private void setTop() {
 		//顶栏
 		JPanel append = new JPanel();
 		append.setLayout(new GridLayout(1, 3));
 		append.add(hostsTextField);
-		searchButton.addActionListener(e -> new Search(hostsTextField.getText()).execute());
+		searchButton.addActionListener(e -> {
+			String s = hostsTextField.getText();
+			String[] tmp = s.split("/");
+			String uri = (s.startsWith("http:") | s.startsWith("https:")) ?
+					tmp[2] : tmp[0];
+			new Search(uri).execute();
+			hostsTextField.setText(uri);
+		});
 		append.add(searchButton);
 //		append.add(enableTwice);
 		add(append, BorderLayout.NORTH);
@@ -135,7 +138,4 @@ public class UserInterface extends JFrame {
 		add(backup, BorderLayout.SOUTH);
 	}
 
-	private static void printException(Exception e) {
-		appendString("\nError in [" + e.getMessage() + "]\n");
-	}
 }

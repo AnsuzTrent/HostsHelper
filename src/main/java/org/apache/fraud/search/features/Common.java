@@ -1,12 +1,7 @@
-/*
- * Trent Inc.
- * Copyright (c) 2018- 2020.
- */
-
 package org.apache.fraud.search.features;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.fraud.search.base.BaseData;
+import org.apache.fraud.search.base.Base;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -16,10 +11,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 
-/**
- * @author trent
- */
-public class Common implements BaseData {
+import static org.apache.fraud.search.base.Base.*;
+
+public class Common {
 
 	public static void backup() {
 		try {
@@ -27,9 +21,9 @@ public class Common implements BaseData {
 
 			Files.deleteIfExists(backup.toPath());
 			Files.copy(HOSTS_PATH.toPath(), backup.toPath());
-			BaseData.printToUserInterface("已备份hosts 文件至 ：  " + backup.toPath() + "\n\n");
+			Base.printToUserInterface("已备份hosts 文件至 ：  " + backup.toPath() + "\n\n");
 		} catch (IOException e) {
-			BaseData.printException(e);
+			Base.printException(e);
 		}
 	}
 
@@ -40,13 +34,13 @@ public class Common implements BaseData {
 			String line;
 			while ((line = br.readLine()) != null) {
 				if (!StringUtils.isEmpty(line)) {
-					BaseData.printToUserInterface(line + "\n");
+					Base.printToUserInterface(line + "\n");
 				}
 			}
 
 			br.close();
 		} catch (IOException e) {
-			BaseData.printException(e);
+			Base.printException(e);
 		}
 	}
 
@@ -54,7 +48,7 @@ public class Common implements BaseData {
 		try {
 			Desktop.getDesktop().open(new File(ETC_PATH));
 		} catch (IOException e) {
-			BaseData.printException(e);
+			Base.printException(e);
 		}
 	}
 
