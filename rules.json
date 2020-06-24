@@ -1,8 +1,14 @@
 [
   {
     "name": "站长之家PC 版",
-    "url": "http://tool.chinaz.com/dns?type=1&host=${website}&ip=",
+    "url": "http://tool.chinaz.com/dns/?type=1&host=${website}&ip=",
     "cssQuery": "div.w60-0.tl",
+    "replaceRegex": "(\\[(.+?)]|-)"
+  },
+  {
+    "name": "站长之家手机版",
+    "url": "https://mtool.chinaz.com/dns/?host=${website}&ip=&accessmode=1",
+    "cssQuery": "td.z-tc.c-39 > span.c-green",
     "replaceRegex": "(\\[(.+?)]|-)"
   },
   {
@@ -12,9 +18,9 @@
     "replaceRegex": ""
   },
   {
-    "name": "站长之家手机版",
-    "url": "https://mtool.chinaz.com/dns/?host=${website}&ip=&accessmode=1",
-    "cssQuery": "td.z-tc.c-39 > span.c-green",
-    "replaceRegex": "(\\[(.+?)]|-)"
+    "name": "ToolFK 工具箱",
+    "url": "https://www.toolfk.com/online-dns?query=${website}",
+    "cssQuery": "table.layui-table > tbody > tr >  td",
+    "replaceRegex": ""
   }
 ]
