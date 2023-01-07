@@ -1,172 +1,646 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <groupId>org.apache.fraud</groupId>
-    <artifactId>SearchHosts</artifactId>
-    <version>1.0</version>
     <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>foundation-framework</module>
+        <module>search-common</module>
+        <module>search-core</module>
+        <module>search-ui-swing</module>
+
+        <module>search-mini</module>
+    </modules>
+
+    <groupId>org.akvo.search</groupId>
+    <artifactId>search-hosts</artifactId>
+    <version>1.0</version>
+
+    <packaging>pom</packaging>
+    <description>用于搜索网址对应的 IP加入hosts 文件以提升访问速度</description>
 
     <properties>
-        <!--软件生成位置 -->
+        <!-- 软件生成位置 -->
         <copy.to>D:\My Document\Desktop\Search Hosts</copy.to>
 
-        <java.version>1.8</java.version>
+        <!-- https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-bom -->
+        <kotlin.version>1.9.0</kotlin.version>
+        <!-- 增量编译-->
+        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+
+        <java.version>17</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.build.sourceEncoding>${maven.compiler.encoding}</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${maven.compiler.encoding}</project.reporting.outputEncoding>
+        <!-- JMockit agent-->
+        <jmockit.agent.argLine>
+            -javaagent:${settings.localRepository}/org/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar
+        </jmockit.agent.argLine>
+        <site.locales>zh_CN</site.locales>
+        <pdf.locales>zh,en,fr</pdf.locales>
+        <libs.path>libs</libs.path>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+        <commons-collections.version>4.4</commons-collections.version>
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <commons-io.version>2.13.0</commons-io.version>
+
+        <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-dependencies-bom -->
+        <selenium.version>4.10.0</selenium.version>
+
+        <!-- https://mvnrepository.com/artifact/org.openjdk.nashorn/nashorn-core -->
+        <nashorn.version>15.4</nashorn.version>
+        <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+        <jsoup.version>1.16.1</jsoup.version>
+
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+        <!-- https://mvnrepository.com/artifact/org.slf4j/jul-to-slf4j -->
+        <!-- https://mvnrepository.com/artifact/org.slf4j/jcl-over-slf4j -->
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-jdk-platform-logging -->
+        <slf4j.version>2.0.6</slf4j.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-bom -->
+        <log4j.version>2.20.0</log4j.version>
+
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson/jackson-bom -->
+        <jackson.version>2.15.2</jackson.version>
 
         <!-- https://mvnrepository.com/artifact/com.formdev/flatlaf -->
-        <flatlaf.version>0.40</flatlaf.version>
-        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-        <gson.version>2.8.6</gson.version>
-        <!-- https://mvnrepository.com/artifact/net.sourceforge.htmlunit/htmlunit -->
-        <htmlunit.version>2.43.0</htmlunit.version>
-        <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
-        <jsoup.version>1.13.1</jsoup.version>
+        <flatlaf.version>3.1.1</flatlaf.version>
+
+        <!-- https://mvnrepository.com/artifact/io.micrometer/micrometer-bom -->
+        <micrometer.version>1.11.2</micrometer.version>
+        <!-- https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-bom -->
+        <opentelemetry.version>1.28.0</opentelemetry.version>
+        <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-bom -->
+        <!--        <jetty.version>11.0.15</jetty.version>-->
+        <jetty.version>9.4.51.v20230217</jetty.version>
+        <!-- https://mvnrepository.com/artifact/io.netty/netty-bom -->
+        <netty.version>4.1.95.Final</netty.version>
+        <!-- https://mvnrepository.com/artifact/tech.tablesaw/tablesaw-aggregate -->
+        <tablesaw.versoin>0.43.1</tablesaw.versoin>
+
+        <!-- https://mvnrepository.com/artifact/io.projectreactor/reactor-bom -->
+        <reactor.version>2022.0.9</reactor.version>
+        <!-- https://mvnrepository.com/artifact/com.github.oshi/oshi-core-java11 -->
+        <oshi.version>6.4.4</oshi.version>
+
+        <!-- https://mvnrepository.com/artifact/org.junit/junit-bom -->
+        <junit.version>5.10.0</junit.version>
+        <!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
+        <assertj.version>3.24.2</assertj.version>
+        <!-- https://mvnrepository.com/artifact/org.jmockit/jmockit -->
+        <jmockit.version>1.49</jmockit.version>
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-bom -->
+        <mockito.version>5.4.0</mockito.version>
+        <!-- https://mvnrepository.com/artifact/com.github.jsonzou/jmockdata -->
+        <jmockdata.version>4.3.0</jmockdata.version>
+
+        <!-- http://maven.apache.org/plugins/ -->
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-clean-plugin -->
+        <maven-clean-plugin.version>3.3.1</maven-clean-plugin.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-deploy-plugin -->
+        <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-install-plugin -->
+        <maven-install-plugin.version>3.1.1</maven-install-plugin.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-site-plugin -->
+        <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jar-plugin -->
+        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-resources-plugin -->
+        <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
+        <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
+
+        <!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
+        <jacoco.version>0.8.10</jacoco.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-report-plugin -->
+        <maven-surefire-report-plugin.version>3.1.2</maven-surefire-report-plugin.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-project-info-reports-plugin -->
+        <maven-project-info-reports-plugin.version>3.4.5</maven-project-info-reports-plugin.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-pdf-plugin -->
+        <maven-pdf-plugin.version>1.6.1</maven-pdf-plugin.version>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-dependency-plugin -->
+        <maven-dependency-plugin.version>3.6.0</maven-dependency-plugin.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin -->
+        <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-antrun-plugin -->
+        <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-assembly-plugin -->
+        <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-source-plugin -->
+        <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-enforcer-plugin -->
+        <maven-enforcer-plugin.version>3.3.0</maven-enforcer-plugin.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>${jsoup.version}</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>net.sourceforge.htmlunit</groupId>
-            <artifactId>htmlunit</artifactId>
-            <version>${htmlunit.version}</version>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>${gson.version}</version>
+            <groupId>org.jmockit</groupId>
+            <artifactId>jmockit</artifactId>
+            <scope>test</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.github.jsonzou</groupId>
+            <artifactId>jmockdata</artifactId>
+            <scope>test</scope>
+            <optional>true</optional>
         </dependency>
 
-        <!-- 主题-->
         <dependency>
-            <groupId>com.formdev</groupId>
-            <artifactId>flatlaf</artifactId>
-            <version>${flatlaf.version}</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+            <scope>test</scope>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>
 
     <build>
-        <finalName>Hosts</finalName>
         <plugins>
-            <!-- http://maven.apache.org/plugins/ -->
-            <!-- 编译-->
             <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <encoding>${maven.compiler.encoding}</encoding>
-                </configuration>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
             </plugin>
-            <!-- 打包-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <!-- 指定入口类 -->
-                            <mainClass>org.akvo.search.Main</mainClass>
-                            <!-- 在jar的MF文件中生成classpath属性 -->
-                            <addClasspath>true</addClasspath>
-                            <!-- classpath前缀,即依赖jar包的路径 -->
-                            <classpathPrefix>lib/</classpathPrefix>
-                        </manifest>
-                    </archive>
-                </configuration>
+                <artifactId>maven-surefire-report-plugin</artifactId>
             </plugin>
-            <!--外部依赖jar包导出-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <!-- 指定依赖包的输出路径，需与上方的classpathPrefix保持一致 -->
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                        </configuration>
-                    </execution>
-                </executions>
+                <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
-            <!-- 复制-->
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <id>copy-lib</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <tasks>
-                                <copy todir="${copy.to}">
-                                    <!-- 从哪里拷贝 -->
-                                    <fileset dir="${project.basedir}">
-                                        <!-- 拷贝内容 -->
-                                        <include name="run.*"/>
-                                        <include name="rules.json"/>
-                                    </fileset>
-                                    <fileset dir="${project.build.directory}">
-                                        <include name="*.jar"/>
-                                    </fileset>
-                                </copy>
-                                <copy todir="${copy.to}\lib">
-                                    <fileset dir="${project.build.directory}\lib">
-                                        <include name="*.jar"/>
-                                    </fileset>
-                                </copy>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pdf-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <!-- clean-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${maven-clean-plugin.version}</version>
+                </plugin>
+                <!-- deploy-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${maven-deploy-plugin.version}</version>
+                </plugin>
+                <!-- 输出到本地仓库-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>${maven-install-plugin.version}</version>
+                </plugin>
+                <!-- site-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven-site-plugin.version}</version>
+                    <configuration>
+                        <locales>${site.locales}</locales>
+                        <outputDirectory>${project.build.directory}/site</outputDirectory>
+                        <relativizeDecorationLinks>false</relativizeDecorationLinks>
+                    </configuration>
+                </plugin>
+
+                <!-- 编译-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                        <encoding>${maven.compiler.encoding}</encoding>
+                    </configuration>
+                </plugin>
+                <!-- 打包-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
+                </plugin>
+                <!-- 复制resources-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven-resources-plugin.version}</version>
+                </plugin>
+                <!-- 测试，jmockit 1.42 之后需要javaagent 参数-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                    <configuration>
+                        <argLine>${jmockit.agent.argLine}</argLine>
+                    </configuration>
+                </plugin>
+
+                <!-- jacoco-->
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco.version}</version>
+                    <executions>
+                        <execution>
+                            <id>default-prepare-agent</id>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>default-report</id>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- surefire-report-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-report-plugin</artifactId>
+                    <version>${maven-surefire-report-plugin.version}</version>
+                </plugin>
+                <!-- 配置生成源码包-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven-source-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- 外部依赖jar包导出-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${maven-dependency-plugin.version}</version>
+                </plugin>
+                <!-- javadoc-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin.version}</version>
+                    <configuration>
+                        <additionalJOption>-Xdoclint:none</additionalJOption>
+                        <charset>${project.reporting.outputEncoding}</charset>
+                        <encoding>${project.reporting.outputEncoding}</encoding>
+                        <docencoding>${project.reporting.outputEncoding}</docencoding>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- report-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>${maven-project-info-reports-plugin.version}</version>
+                    <configuration>
+                        <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+                    </configuration>
+                </plugin>
+                <!-- pdf-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pdf-plugin</artifactId>
+                    <version>${maven-pdf-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>pdf</id>
+                            <phase>site</phase>
+                            <goals>
+                                <goal>pdf</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.reporting.outputDirectory}</outputDirectory>
+                                <includeReports>false</includeReports>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <locales>${pdf.locales}</locales>
+                    </configuration>
+                </plugin>
+                <!-- 复制-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${maven-antrun-plugin.version}</version>
+                </plugin>
+                <!-- assembly-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven-assembly-plugin.version}</version>
+                </plugin>
+                <!-- 限制-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${maven-enforcer-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
+
+    <reporting>
+        <excludeDefaults>false</excludeDefaults>
+        <outputDirectory>${project.distributionManagement.site}/site</outputDirectory>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <!-- select non-aggregate reports -->
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-bom</artifactId>
+                <version>${kotlin.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-bom</artifactId>
+                <version>${jetty.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>${netty.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-bom</artifactId>
+                <version>${mockito.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-bom</artifactId>
+                <version>${log4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.micrometer</groupId>
+                <artifactId>micrometer-bom</artifactId>
+                <version>${micrometer.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.opentelemetry</groupId>
+                <artifactId>opentelemetry-bom</artifactId>
+                <version>${opentelemetry.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.projectreactor</groupId>
+                <artifactId>reactor-bom</artifactId>
+                <version>${reactor.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-dependencies-bom</artifactId>
+                <version>${selenium.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${commons-collections.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-jdk-platform-logging</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>htmlunit3-driver</artifactId>
+                <version>${selenium.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.openjdk.nashorn</groupId>
+                <artifactId>nashorn-core</artifactId>
+                <version>${nashorn.version}</version>
+            </dependency>
+
+            <!--            <dependency>-->
+            <!--                <groupId>tech.tablesaw</groupId>-->
+            <!--                <artifactId>tablesaw-aggregate</artifactId>-->
+            <!--                <version>${tablesaw.versoin}</version>-->
+            <!--            </dependency>-->
+
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>net.bytebuddy</groupId>
+                        <artifactId>byte-buddy</artifactId>
+                    </exclusion>
+                </exclusions>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jsonzou</groupId>
+                <artifactId>jmockdata</artifactId>
+                <version>${jmockdata.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jmockit</groupId>
+                <artifactId>jmockit</artifactId>
+                <version>${jmockit.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- 主题-->
+            <dependency>
+                <groupId>com.formdev</groupId>
+                <artifactId>flatlaf</artifactId>
+                <version>${flatlaf.version}</version>
+            </dependency>
+            <!-- 系统信息-->
+            <dependency>
+                <groupId>com.github.oshi</groupId>
+                <artifactId>oshi-core-java11</artifactId>
+                <version>${oshi.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <repositories>
         <repository>
-            <id>aliyunmaven</id>
-            <name>阿里云公共仓库</name>
+            <id>ali-central</id>
+            <url>https://maven.aliyun.com/repository/central</url>
+        </repository>
+        <repository>
+            <id>ali-public</id>
             <url>https://maven.aliyun.com/repository/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
+        </repository>
+        <repository>
+            <id>ali-spring</id>
+            <url>https://maven.aliyun.com/repository/spring</url>
         </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
-            <id>aliyunmaven</id>
-            <name>阿里云公共仓库</name>
+            <id>ali-central</id>
+            <url>https://maven.aliyun.com/repository/central</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>ali-public</id>
             <url>https://maven.aliyun.com/repository/public</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>ali-spring</id>
+            <url>https://maven.aliyun.com/repository/spring-plugin</url>
         </pluginRepository>
     </pluginRepositories>
 

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.akvo.search</groupId>
+        <artifactId>search-hosts</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <artifactId>search-core</artifactId>
+    <packaging>jar</packaging>
+    <description>项目的搜索部分</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.akvo.foundation</groupId>
+            <artifactId>foundation-framework</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.akvo.foundation</groupId>
+            <artifactId>search-common</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>htmlunit3-driver</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.akvo.search</groupId>
+            <artifactId>search-ui-swing</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.seleniumhq.selenium</groupId>-->
+        <!--            <artifactId>selenium-java</artifactId>-->
+        <!--            <optional>true</optional>-->
+        <!--            <scope>test</scope>-->
+        <!--        </dependency>-->
+
+        <!--        <dependency>-->
+        <!--            <groupId>net.lightbody.bmp</groupId>-->
+        <!--            <artifactId>browsermob-core</artifactId>-->
+        <!--            <version>2.1.5</version>-->
+        <!--        </dependency>-->
+
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${project.parent.groupId}</groupId>
+                <artifactId>${project.parent.artifactId}</artifactId>
+                <version>${project.parent.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+</project>
